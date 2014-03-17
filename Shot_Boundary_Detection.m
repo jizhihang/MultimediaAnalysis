@@ -1,9 +1,15 @@
 clc;
 clear all;
+% Implementation shot boundary detection framework in paper( rule based algorithm)
+% (cf. "A Formal Study of Shot Boundary Detection",Jinhui Yuan, IEEE Transactions on, 2007) 
+% the feature for video is block-histogram (Using the adaptive thresh-hold)
+% and edge change ratio(ECR) is used to eliminate the disturbance of abrupt
+% illumination change 
+
 % the name of the movie and the folder to store the frames extracted from
 % the movie
-filename = 'anni005.mpg';
-folder = 'anni005';
+filename = 'data/anni005.mpg';
+folder = 'data/anni005';
 % this is used to control whether to extract the movie to images
 skip_video2frames = true;
 video = VideoReader(filename);
@@ -18,28 +24,11 @@ if ~skip_video2frames
     end
 end
 
-% calculate the frame distance 
+% calculate the continuity signal of the video 
+conSig = Get_continuity_signal(video,1);
 
-histD = zeros(nFrame-1,1);
-% ECR = zeros(nFrame-1,1);
-preFrame = read(video,1);
-cut = zeros(nFrame-1,1);
-for iter = 2:nFrame
-   frame = read(video,iter);
-%    [histInterSec,edgeChangeRatio] = Cal_frame_distance(preFrame,frame);
-   [histInterSec,~] = Cal_frame_distance(preFrame,frame);
-   histD(iter-1,1) = histInterSec;
-   if(histInterSec<0.6)
-       cut(iter) = 1;
-   end
-%    ECR(iter-1,1) = edgeChangeRatio;
-   preFrame = frame;
-end
-
-cutIndex = find(cut==1);
-
-% X = 1:nFrame-1;               % plot the data 
-% figure('numbertitle','off','name','histogram');
-% plot(X,histD,'b+:');
+X = 1:nFrame-1;               % plot the data 
+figure('numbertitle','off','name','histogram');
+plot(X,conSig,'b+:');
 % figure('numbertitle','off','name','edge change ratio');
 % plot(X,ECR,'r*-');
