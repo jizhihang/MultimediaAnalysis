@@ -11,7 +11,7 @@ histogram = zeros(nFrames,256);
 readTimes = floor(nFrames/200)-1;         % read 200 frames everyTime
 remainder = rem(nFrames,200);
 
-% every time read 200 frame in the buffer
+% every time read 200 frame in the buffer , use histogram to represent the frame
 buf = 200;
 histJ = 1;
 for iRead = 0:readTimes
@@ -29,15 +29,8 @@ if(remainder>0)     % if the frame can not be divisible by buffer size ,read in 
     end
 end
 
-% data = read(mov);
-% [~,~,channel,nFrames] = size(data);
-% histogram = zeros(nFrames,256);
-% for iter = 1:nFrames
-%     histogram(iter,:) = imhist(data(:,:,1,iter))';
-% end
-
 ContinuitySignal = zeros(nFrames-1,1);
-similarityMatrix = zeros(nFrames,nFrames);  % this matrix is a sparse matrix
+similarityMatrix = spalloc(nFrames,nFrames,3*nNeighbors*nFrames);  % this matrix is a sparse matrix only the elements around the diagonal is nonzero
 sigmaSquare = 150^2;
 for i = 1:nFrames
     for j = i-2*nNeighbors+1:i

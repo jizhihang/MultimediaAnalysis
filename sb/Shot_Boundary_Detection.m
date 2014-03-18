@@ -6,29 +6,39 @@ clear all;
 % and edge change ratio(ECR) is used to eliminate the disturbance of abrupt
 % illumination change 
 
-% the name of the movie and the folder to store the frames extracted from
-% the movie
-filename = 'data/foo.avi';
-folder = 'data/foo';
+% the path of the data and the output
+data_folder = '../data';
+videoname = 'foo.avi';
+[path,name,ext] = fileparts(videoname);
+imgfolder = fullfile(data_folder,name);
+filepath = fullfile(data_folder,videoname);
+cutOut = fullfile(data_folder,[name '.txt']);
 % this is used to control whether to extract the movie to images
-skip_video2frames = true;
-video = VideoReader(filename);
+skip_video2frames = false;
+video = VideoReader(filepath);
 nFrame = video.NumberOfFrames;
 
 % write the frames out to the containing folder
 if ~skip_video2frames
+    mkdir(imgfolder);
     for iter = 1:nFrame
         frame =  read(video,iter);
-        path = [folder '/' num2str(iter) '.jpg'];
+        path = [imgfolder '/' num2str(iter) '.jpg'];
         imwrite(frame,path,'jpg');
     end
 end
 
 % calculate the continuity signal of the video 
 conSig = Get_continuity_signal(video,3);
+cut = Cal_sb(conSig);
+sb = find(cut==1);
 
 X = 1:nFrame-1;               % plot the data 
-figure('numbertitle','off','name','histogram');
+figure('numbertitle','off','name','continuitySignal');
 plot(X,conSig,'b+:');
-% figure('numbertitle','off','name','edge change ratio');
-% plot(X,ECR,'r*-');
+
+% print the result out
+fid = fopen(cutOut,'w');
+fprintf(fid,'shot_boundary at %d \n',sb);
+fclose(fid);
+

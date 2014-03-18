@@ -4,7 +4,6 @@ function [ Dis ] = Cal_histogram_intersection( hist1,hist2 )
 % hist1 : the Nx1 histogram of the image 1
 % hist2 : the Nx1 histogram of the image 2
 % Dis : the histogram intersection distance 
-
 Dis = sum(min(hist1,hist2));
 Dis = Dis/sum(hist1);         % normalize the intersection value
 end
