@@ -8,8 +8,8 @@ clear all;
 
 % the name of the movie and the folder to store the frames extracted from
 % the movie
-filename = 'data/anni005.mpg';
-folder = 'data/anni005';
+filename = 'data/foo.avi';
+folder = 'data/foo';
 % this is used to control whether to extract the movie to images
 skip_video2frames = true;
 video = VideoReader(filename);
@@ -25,7 +25,7 @@ if ~skip_video2frames
 end
 
 % calculate the continuity signal of the video 
-conSig = Get_continuity_signal(video,1);
+conSig = Get_continuity_signal(video,3);
 
 X = 1:nFrame-1;               % plot the data 
 figure('numbertitle','off','name','histogram');
