@@ -8,27 +8,31 @@ function [ContinuitySignal] = Get_continuity_signal(mov,nNeighbors)
 
 nFrames = mov.NumberOfFrames;
 histogram = zeros(nFrames,256);
-readTimes = floor(nFrames/200)-1;         % read 200 frames everyTime
-remainder = rem(nFrames,200);
 
 % every time read 200 frame in the buffer , use histogram to represent the frame
-buf = 200;
+buf = 400;
+readTimes = floor(nFrames/buf)-1;         % read 200 frames everyTime
+remainder = rem(nFrames,buf);
 histJ = 1;
+disp('calculate image histogram feature...');
 for iRead = 0:readTimes
     data = read(mov,[iRead*buf+1 (iRead+1)*buf]);
     for iter = 1:buf
-        histogram(histJ,:) = imhist(data(:,:,1,iter))';
+        dataI = rgb2gray(data(:,:,:,iter));
+        histogram(histJ,:) = imhist(dataI)';
         histJ = histJ+1;
     end
 end
 if(remainder>0)     % if the frame can not be divisible by buffer size ,read in the rest data
     data = read(mov,[(readTimes+1)*buf+1 (readTimes+1)*buf+remainder]);
     for iter = 1:remainder
-        histogram(histJ,:) = imhist(data(:,:,1,iter))';
+        dataI = rgb2gray(data(:,:,:,iter));
+        histogram(histJ,:) = imhist(dataI)';
         histJ = histJ+1;
     end
 end
 
+disp('calculate similarity between frames...');
 ContinuitySignal = zeros(nFrames-1,1);
 similarityMatrix = spalloc(nFrames,nFrames,3*nNeighbors*nFrames);  % this matrix is a sparse matrix only the elements around the diagonal is nonzero
 sigmaSquare = 150^2;
@@ -44,7 +48,7 @@ for i = 1:nFrames
         end
     end
 end
-similarityMatrix = sparse(similarityMatrix);        
+disp('calculate continuity function...');   
 % calculate the continuity signal
 for iter = 1:nFrames-1
     subLeft = iter-nNeighbors+1;
