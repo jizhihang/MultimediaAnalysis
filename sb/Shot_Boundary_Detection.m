@@ -6,6 +6,9 @@ clear all;
 % and edge change ratio(ECR) is used to eliminate the disturbance of abrupt
 % illumination change 
 
+% see param   conSigStored  : whether the video continuity value has been stored
+%     param   skip_video2frames : extract video to frames 
+
 % the path of the data and the output
 start = cputime;
 data_folder = '../data';
@@ -14,6 +17,9 @@ videoname = 'senses111.mpg';
 imgfolder = fullfile(data_folder,name);
 filepath = fullfile(data_folder,videoname);
 cutOut = fullfile(data_folder,[name '.txt']);
+
+conSigStored = true;
+dataPath = fullfile(data_folder,name);
 % this is used to control whether to extract the movie to images
 skip_video2frames = true;
 video = VideoReader(filepath);
@@ -37,19 +43,29 @@ end
 
 % calculate the continuity signal of the video 
 disp('calculate the continuity signal...');
-conSig = Get_continuity_signal(video,1);
+if ~conSigStored
+    conSig = Get_continuity_signal(video,1);
+    disp(dataPath);
+    save(dataPath);
+else
+    load(dataPath);
+end
 disp('find boundary with the signal');
-cut = Cal_sb(conSig,video);
-sb = find(cut==1);
+sb = Cal_sb(conSig,video);
+cut = find(sb==1);
+dissolve = find(sb==3);
 
-X = 1:nFrame-1;               % plot the data 
-figure('numbertitle','off','name','continuitySignal');
-plot(X,conSig,'b+:');
+% X = 1:nFrame-1;               % plot the data 
+% figure('numbertitle','off','name','continuitySignal');
+% plot(X,conSig,'b+:');
 
 % print the result out
 disp(strcat('result is display in ',cutOut));
 fid = fopen(cutOut,'w');
-fprintf(fid,'shot_boundary at %d \n',sb);
+fprintf(fid,'hard cut:\n');
+fprintf(fid,'%d \n',cut);
+% fprintf(fid,'dissolve:\n');
+% fprintf(fid,'%d %d\n',dissolve);
 fclose(fid);
 times = cputime-start;
 disp(['Elapsed time' num2str(times)]);

@@ -10,7 +10,7 @@ nFrames = mov.NumberOfFrames;
 histogram = zeros(nFrames,256);
 
 % every time read 200 frame in the buffer , use histogram to represent the frame
-buf = 400;
+buf = 200;
 readTimes = floor(nFrames/buf)-1;         % read 200 frames everyTime
 remainder = rem(nFrames,buf);
 histJ = 1;
