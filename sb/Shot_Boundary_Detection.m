@@ -11,7 +11,7 @@ clear all;
 
 % the path of the data and the output
 start = cputime;
-data_folder = '../data';
+data_folder = '../videos';
 videoname = 'senses111.mpg';
 [path,name,ext] = fileparts(videoname);
 imgfolder = fullfile(data_folder,name);

@@ -28,6 +28,7 @@ index = continuitySignal<con_threshHold;
 shotBoundary(index) = 1;
 shotBoundary = remark_sb_type(shotBoundary);       % remark the shotBoundary with its' type
 
+disp('edge change ratio check for wrong recall');
 hardCutIdx = find(shotBoundary==1);
 dilate = 3;
 ecr_dif_thresh = 2.0e-01;      % the dif-threshhold for edge change ratio
