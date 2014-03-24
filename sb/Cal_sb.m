@@ -50,5 +50,23 @@ for i = 1:num
     end
 end
 shotBoundary = merge_hard_cut(shotBoundary,continuitySignal);
+
+dissolve = find(shotBoundary==3);
+disNum = numel(dissolve);
+i = 1;
+while i < disNum
+    previousIdx = dissolve(i);
+    nextIdx = dissolve(i+1);
+    currentIdx = floor((previousIdx+nextIdx)/2);
+    previous = rgb2gray(read(video,previousIdx));
+    current = rgb2gray(read(video,currentIdx));
+    next = rgb2gray(read(video,nextIdx));
+    ecr1 = edge_change_ratio(previous,current,dilate);
+    ecr2 = edge_change_ratio(current,next,dilate);
+    ecr_dif = abs(ecr2 - ecr1) / ecr1;
+    if(ecr_dif<=ecr_dif_thresh)
+        shotBoundary(previousIdx:nextIdx) = 0;         % eliminate the wrong recall
+    end
+    i = i+2;
 end
 

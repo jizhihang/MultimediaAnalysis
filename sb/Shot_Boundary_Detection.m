@@ -10,18 +10,19 @@ clear all;
 %     param   skip_video2frames : extract video to frames 
 
 % the path of the data and the output
-start = cputime;
-data_folder = '../videos';
-videoname = 'senses111.mpg';
+
+tic
+data_folder = './videos';
+videoname = 'anni005.mpg';
 [path,name,ext] = fileparts(videoname);
 imgfolder = fullfile(data_folder,name);
 filepath = fullfile(data_folder,videoname);
 cutOut = fullfile(data_folder,[name '.txt']);
 
-conSigStored = true;
+conSigStored = false;
 dataPath = fullfile(data_folder,name);
 % this is used to control whether to extract the movie to images
-skip_video2frames = true;
+skip_video2frames = false;
 video = VideoReader(filepath);
 nFrame = video.NumberOfFrames;
 
@@ -64,9 +65,9 @@ disp(strcat('result is display in ',cutOut));
 fid = fopen(cutOut,'w');
 fprintf(fid,'hard cut:\n');
 fprintf(fid,'%d \n',cut);
-% fprintf(fid,'dissolve:\n');
-% fprintf(fid,'%d %d\n',dissolve);
+fprintf(fid,'dissolve:\n');
+fprintf(fid,'%d %d\n',dissolve);
 fclose(fid);
-times = cputime-start;
-disp(['Elapsed time' num2str(times)]);
+toc             % disp the time elapsed
+
 
