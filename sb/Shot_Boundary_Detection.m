@@ -12,8 +12,8 @@ clear all;
 % the path of the data and the output
 
 tic
-data_folder = './videos';
-videoname = 'anni005.mpg';
+data_folder = '../videos';
+videoname = 'HVC006045.mp4';
 [path,name,ext] = fileparts(videoname);
 imgfolder = fullfile(data_folder,name);
 filepath = fullfile(data_folder,videoname);
@@ -47,7 +47,7 @@ disp('calculate the continuity signal...');
 if ~conSigStored
     conSig = Get_continuity_signal(video,1);
     disp(dataPath);
-    save(dataPath);
+    save(dataPath,'conSig');
 else
     load(dataPath);
 end

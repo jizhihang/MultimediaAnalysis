@@ -1,0 +1,14 @@
+Video
+
+Key frame-->sift feature
+
+Sift-->k-means(GMM)
+
+Image signature
+
+Video signature
+
+PCA
+
+SVM
+

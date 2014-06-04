@@ -1,3 +1,6 @@
 data/
 image/
 videos/
+paper_result_data/
+Event-BG.csv
+test.csv
